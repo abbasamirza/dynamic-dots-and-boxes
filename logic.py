@@ -4,7 +4,7 @@ from constants import Player
 class DotsAndBoxesGame:
     def __init__(self, size):
         self.size = size
-        self.lines = set()
+        self.lines = {}
         self.boxes = {}
         self.current_player = Player.PLAYER
 
@@ -16,7 +16,7 @@ class DotsAndBoxesGame:
         return new_game
 
     def make_move(self, move):
-        self.lines.add(move)
+        self.lines[move] = self.current_player
         claimed_box = False
 
         for box in self.get_adjacent_boxes(move):
@@ -45,9 +45,11 @@ class DotsAndBoxesGame:
         for y in range(self.size):
             for x in range(self.size - 1):
                 h = (x, y, x + 1, y)
-                v = (y, x, y, x + 1)
                 if h not in self.lines:
                     moves.append(h)
+        for y in range(self.size - 1):
+            for x in range(self.size):
+                v = (x, y, x, y + 1)
                 if v not in self.lines:
                     moves.append(v)
         return moves
@@ -68,7 +70,7 @@ class DotsAndBoxesGame:
         return boxes
 
     def is_terminal(self):
-        return len(self.lines) >= (self.size - 1) * self.size * 2
+        return len(self.lines) >= 2 * self.size * (self.size - 1)
 
     def evaluate(self):
         player_score = sum(1 for v in self.boxes.values() if v == Player.PLAYER)

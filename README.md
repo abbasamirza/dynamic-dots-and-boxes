@@ -19,7 +19,7 @@ Dynamic Dots and Boxes is a Python game built using Pygame. In this game, player
   - **Line Reversal**: Undo the opponent's last move.
   - **Swap Token**: Exchange your token for a random line.
 - AI that uses either Minimax or Alpha-Beta pruning algorithms.
-- Menu selection for difficulty, grid size, and AI algorithm.
+- Menu selection for difficulty, and grid size.
 
 ## Setup
 

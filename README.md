@@ -62,12 +62,12 @@ The game window will open, and you will be presented with the main menu to choos
 
    - Select the **Difficulty** (Easy, Medium, Hard). The difficulty affects the AI search depth and the chance to use power-ups.
    - Choose a **Grid Size** (predefined or custom input from 3 to 20).
-   - The AI algorithm is also chosen here (Minimax for Easy, Alpha-Beta for Medium/Hard – or if you select a different option in the algorithm menu if implemented).
+   - The AI algorithm is also chosen here (Minimax for Easy, Alpha-Beta for Medium/Hard - This was done due to performance barriers as well).
 
 2. **Gameplay:**
 
    - The game board is displayed with a grid of dots.
-   - Draw a line between two adjacent dots by clicking on the grid.
+   - Draw a line between two adjacent dots by clicking on the space between the dots.
    - Completing a box (all four sides) awards you (or the AI) a power token.
    - **Power-up rules:** Once a token is used in a turn, no new token is awarded for additional boxes until the opponent completes a turn.
    - Use power-ups by clicking the corresponding buttons on the left panel.
@@ -89,8 +89,6 @@ The AI can use one of two algorithms:
 
 - **Minimax:** A basic decision-making algorithm.
 - **Alpha-Beta Pruning:** An optimized version of Minimax that prunes branches to reduce computation time.
-
-At the start of the game, you can choose which algorithm the AI will use.
 
 ## Project Structure
 

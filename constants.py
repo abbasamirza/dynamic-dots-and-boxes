@@ -16,6 +16,7 @@ class Colors:
     BUTTON_HOVER = (150, 150, 255)
     PLAYER_LINE_COLOR = (0, 0, 0)
     AI_LINE_COLOR = (50, 50, 200)
+    BONUS_COLOR = (255, 215, 0)
 
 
 BUTTON_BACK_SIZE = (250, 70)

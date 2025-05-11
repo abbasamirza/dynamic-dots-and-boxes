@@ -347,18 +347,88 @@ def game_loop(grid_size, difficulty, algo_choice):
 
         # AI's move
         if game.current_player == Player.AI:
-            if game.power_tokens[Player.AI] >= 1 and not game.power_used_this_turn:
-                if random.random() < ai_prob:
-                    game.power_tokens[Player.AI] = 0
-                    game.power_used_this_turn = True
+            base_eval, _ = (
+                (alpha_beta if algo_choice == "alpha-beta" else minimax)(
+                    game,
+                    ai_depth,
+                    alpha=-float("inf"),
+                    beta=float("inf"),
+                    maximizing=True,
+                )
+                if algo_choice == "alpha-beta"
+                else minimax(game, ai_depth, True)
+            )
+
+            best_eval = base_eval
+            best_action = None  # Here None means no token should be used
+
+            if (
+                game.power_tokens[Player.AI] >= 1
+                and not game.power_used_this_turn
+                and random.random() < ai_prob
+            ):
+                # Try each of the three power-ups
+                for action in ("Extra Move", "Line Reversal", "Swap Token"):
+                    ng = game.clone()
+
+                    if action == "Line Reversal":
+                        if ng.last_move and ng.lines.get(ng.last_move) != Player.AI:
+                            del ng.lines[ng.last_move]
+                            ng.power_tokens[Player.AI] -= 1
+                            ng.power_used_this_turn = True
+                            extra_move = False
+
+                    elif action == "Extra Move":
+                        extra_move = True
+                        ng.power_tokens[Player.AI] -= 1
+                        ng.power_used_this_turn = True
+                    elif action == "Swap Token":
+                        extra_move = False
+                        for _ in range(2):
+                            choices = ng.get_possible_moves()
+                            if not choices:
+                                break
+                            rm = random.choice(choices)
+                            ng.make_move(rm)
+                        ng.power_tokens[Player.AI] -= 1
+                        ng.power_used_this_turn = True
+                    else:
+                        continue
+
+                    if algo_choice == "alpha-beta":
+                        val, _ = alpha_beta(
+                            ng, ai_depth, -float("inf"), float("inf"), True
+                        )
+                    else:
+                        val, _ = minimax(ng, ai_depth, True)
+
+                    if val > best_eval:
+                        best_eval = val
+                        best_action = action
+
+            if best_action is not None:
+                game.power_used_this_turn = True
+
+                if best_action == "Extra Move":
+                    extra_move = True
+                elif best_action == "Line Reversal" and game.last_move:
+                    del game.lines[game.last_move]
+                elif best_action == "Swap Token":
+                    swap_count = 2
 
             if algo_choice == "alpha-beta":
-                best = alpha_beta(game, ai_depth, float("-inf"), float("inf"), True)[1]
+                _, best_move = alpha_beta(
+                    game, ai_depth, -float("inf"), float("inf"), True
+                )
             else:
-                best = minimax(game, ai_depth, True)[1]
+                _, best_move = minimax(game, ai_depth, True)
 
-            if best:
-                game.make_move(best)
+            if best_move:
+                game.make_move(best_move)
+
+            if extra_move:
+                game.current_player = Player.AI
+                extra_move = False
 
             continue
 

@@ -12,6 +12,7 @@ class Colors:
     PINK = (255, 182, 193)
     BLUE = (173, 216, 230)
     GRAY = (200, 200, 200)
+    RED = (255, 0, 0)
     BUTTON_COLOR = (100, 100, 255)
     BUTTON_HOVER = (150, 150, 255)
     PLAYER_LINE_COLOR = (0, 0, 0)

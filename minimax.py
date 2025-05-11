@@ -1,4 +1,4 @@
-from logic import DotsAndBoxesGame
+from constants import Player
 
 def minimax(game, depth, maximizing):
     if depth == 0 or game.is_terminal():
@@ -10,7 +10,7 @@ def minimax(game, depth, maximizing):
         for move in game.get_possible_moves():
             new_game = game.clone()
             new_game.make_move(move)
-            eval = minimax(new_game, depth - 1, new_game.current_player == "ai")[0]
+            eval = minimax(new_game, depth - 1, new_game.current_player == Player.AI)[0]
             if eval > max_eval:
                 max_eval = eval
                 best_move = move
@@ -20,7 +20,7 @@ def minimax(game, depth, maximizing):
         for move in game.get_possible_moves():
             new_game = game.clone()
             new_game.make_move(move)
-            eval = minimax(new_game, depth - 1, new_game.current_player == "ai")[0]
+            eval = minimax(new_game, depth - 1, new_game.current_player == Player.AI)[0]
             if eval < min_eval:
                 min_eval = eval
                 best_move = move

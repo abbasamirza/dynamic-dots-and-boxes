@@ -1,6 +1,7 @@
 import pygame
 from logic import DotsAndBoxesGame
 from minimax import minimax
+from constants import Player
 
 pygame.init()
 
@@ -21,6 +22,7 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 FONT = pygame.font.SysFont("Arial", 36)
 
+
 def draw_text_button(surface, text, rect, hover=False):
     color = BUTTON_HOVER if hover else BUTTON_COLOR
     pygame.draw.rect(surface, color, rect, border_radius=10)
@@ -28,10 +30,11 @@ def draw_text_button(surface, text, rect, hover=False):
     label_rect = label.get_rect(center=rect.center)
     surface.blit(label, label_rect)
 
+
 def get_line_from_mouse(pos, grid_size, spacing):
     x, y = pos
     closest = None
-    min_dist = float('inf')
+    min_dist = float("inf")
 
     for row in range(grid_size):
         for col in range(grid_size - 1):
@@ -61,28 +64,36 @@ def get_line_from_mouse(pos, grid_size, spacing):
 
     return closest
 
+
 def draw_board(win, game, grid_size):
     win.fill(WHITE)
     spacing = (SCREEN_WIDTH - 2 * MARGIN) // (grid_size - 1)
 
     for y in range(grid_size):
         for x in range(grid_size):
-            pygame.draw.circle(win, BLACK, (MARGIN + x * spacing, MARGIN + y * spacing), DOT_RADIUS)
+            pygame.draw.circle(
+                win, BLACK, (MARGIN + x * spacing, MARGIN + y * spacing), DOT_RADIUS
+            )
 
     for line in game.lines:
         x1, y1, x2, y2 = line
-        pygame.draw.line(win, BLACK,
-                         (MARGIN + x1 * spacing, MARGIN + y1 * spacing),
-                         (MARGIN + x2 * spacing, MARGIN + y2 * spacing),
-                         LINE_WIDTH)
+        pygame.draw.line(
+            win,
+            BLACK,
+            (MARGIN + x1 * spacing, MARGIN + y1 * spacing),
+            (MARGIN + x2 * spacing, MARGIN + y2 * spacing),
+            LINE_WIDTH,
+        )
 
     for box, owner in game.boxes.items():
         x, y = box
-        rect = pygame.Rect(MARGIN + x * spacing + LINE_WIDTH,
-                           MARGIN + y * spacing + LINE_WIDTH,
-                           spacing - 2 * LINE_WIDTH,
-                           spacing - 2 * LINE_WIDTH)
-        color = PINK if owner == "player" else BLUE
+        rect = pygame.Rect(
+            MARGIN + x * spacing + LINE_WIDTH,
+            MARGIN + y * spacing + LINE_WIDTH,
+            spacing - 2 * LINE_WIDTH,
+            spacing - 2 * LINE_WIDTH,
+        )
+        color = PINK if owner == Player.PLAYER else BLUE
         pygame.draw.rect(win, color, rect)
 
     # Buttons
@@ -94,6 +105,7 @@ def draw_board(win, game, grid_size):
     pygame.display.update()
     return back_button, quit_button
 
+
 def game_loop(grid_size):
     clock = pygame.time.Clock()
     game = DotsAndBoxesGame(grid_size)
@@ -104,7 +116,7 @@ def game_loop(grid_size):
         clock.tick(FPS)
         back_button, quit_button = draw_board(screen, game, grid_size)
 
-        if game.current_player == "ai":
+        if game.current_player == Player.AI:
             best_move = minimax(game, 2, True)[1]
             if best_move:
                 game.make_move(best_move)
@@ -125,6 +137,7 @@ def game_loop(grid_size):
                 if move and move not in game.lines:
                     game.make_move(move)
 
+
 def main_menu():
     clock = pygame.time.Clock()
     while True:
@@ -136,9 +149,15 @@ def main_menu():
         hard_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 60)
         quit_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, 500, 300, 60)
 
-        draw_text_button(screen, "Easy (5x5)", easy_button, easy_button.collidepoint(mx, my))
-        draw_text_button(screen, "Medium (10x10)", medium_button, medium_button.collidepoint(mx, my))
-        draw_text_button(screen, "Hard (15x15)", hard_button, hard_button.collidepoint(mx, my))
+        draw_text_button(
+            screen, "Easy (5x5)", easy_button, easy_button.collidepoint(mx, my)
+        )
+        draw_text_button(
+            screen, "Medium (10x10)", medium_button, medium_button.collidepoint(mx, my)
+        )
+        draw_text_button(
+            screen, "Hard (15x15)", hard_button, hard_button.collidepoint(mx, my)
+        )
         draw_text_button(screen, "Quit", quit_button, quit_button.collidepoint(mx, my))
 
         pygame.display.update()
@@ -160,6 +179,7 @@ def main_menu():
                     exit()
 
             clock.tick(FPS)
+
 
 if __name__ == "__main__":
     main_menu()

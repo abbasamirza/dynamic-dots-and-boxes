@@ -266,7 +266,7 @@ def confirm_dialog(msg):
                     return False
 
 
-def end_game_menu(grid_size, game: DotsAndBoxesGame, difficulty):
+def end_game_menu(grid_size, game: DotsAndBoxesGame, difficulty, algo_choice):
     """
     This function displays the end game menu
     Also displays the result of the game
@@ -302,7 +302,7 @@ def end_game_menu(grid_size, game: DotsAndBoxesGame, difficulty):
 
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if pb.collidepoint(e.pos):
-                    game_loop(grid_size, difficulty)
+                    game_loop(grid_size, difficulty, algo_choice)
                     return
                 if mb.collidepoint(e.pos):
                     return
@@ -342,7 +342,7 @@ def game_loop(grid_size, difficulty, algo_choice):
 
         # Check if all the lines are drawn in the grid
         if game.is_terminal():
-            end_game_menu(grid_size, game, difficulty)
+            end_game_menu(grid_size, game, difficulty, algo_choice)
             return
 
         # AI's move

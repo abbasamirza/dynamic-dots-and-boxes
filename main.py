@@ -1,7 +1,8 @@
 import pygame, sys, math, random
 from logic import DotsAndBoxesGame
-from minimax import minimax
 from constants import Player, Colors, BUTTON_BACK_SIZE, CONFIRM_DIALOG_SIZE
+from minimax import minimax
+from alpha_beta_pruning import alpha_beta
 
 pygame.init()
 
@@ -310,7 +311,7 @@ def end_game_menu(grid_size, game: DotsAndBoxesGame, difficulty):
                     sys.exit()
 
 
-def game_loop(grid_size, difficulty):
+def game_loop(grid_size, difficulty, algo_choice):
     """
     This function runs the main game loop
     It handles the game logic and user input
@@ -318,8 +319,8 @@ def game_loop(grid_size, difficulty):
     """
     depth_map = {
         "Easy": 1,
-        "Medium": 3,
-        "Hard": 5,
+        "Medium": 2,
+        "Hard": 3,
     }  # This maps the difficulty of the AI by limiting the depth of the minimax algorithm
     ai_depth = depth_map.get(difficulty, 2)
     ai_prob = {"Easy": 0.1, "Medium": 0.3, "Hard": 0.5}.get(
@@ -351,7 +352,10 @@ def game_loop(grid_size, difficulty):
                     game.power_tokens[Player.AI] = 0
                     game.power_used_this_turn = True
 
-            best = minimax(game, ai_depth, True)[1]
+            if algo_choice == "alpha-beta":
+                best = alpha_beta(game, ai_depth, float("-inf"), float("inf"), True)[1]
+            else:
+                best = minimax(game, ai_depth, True)[1]
 
             if best:
                 game.make_move(best)
@@ -548,8 +552,13 @@ def main_menu():
                         sz = grid_size_menu(d)
 
                         if sz:
+                            if d == "Easy":
+                                algo = "minimax"
+                            else:
+                                algo = "alpha-beta"
+
                             # Start the game
-                            game_loop(sz, d)
+                            game_loop(sz, d, algo)
 
                 # Quit if the user clicks on quit
                 if qb.collidepoint(e.pos):
